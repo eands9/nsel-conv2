@@ -23,10 +23,12 @@ class ViewController: UIViewController {
     var timer = Timer()
     var counter = 0.0
 
-    var randomNumA : Double = 0.00
-    var randomNumB : Double = 0.00
-    var numA: Double = 0.00
-    var numB: Double = 0.00
+    var randomA = 0
+    var randomB = 0
+    var randomC: Double = 0.00
+    let meterUnits = [UnitLength.millimeters,UnitLength.centimeters,UnitLength.decimeters,UnitLength.meters,UnitLength.decameters,UnitLength.hectometers,UnitLength.kilometers]
+    var indexCount = 0
+    
     var questionTxt : String = ""
     var answerCorrect : Double = 0
     var answerUser : Double = 0
@@ -51,11 +53,32 @@ class ViewController: UIViewController {
     }
     
     func askQuestion(){
-        randomNumA = Double.random(in: 5 ... 10)
-        randomNumB = Double.random(in: 0.25 ... 4.75)
-        numA = round(randomNumA*10)/10
-        numB = round(randomNumB*100)/100
-        questionLabel.text = "\(numA) - \(numB)"
+        
+        indexCount = meterUnits.count - 1
+        
+        while randomA == randomB{
+            randomA = Int.random(in: 0 ... indexCount)
+            randomB = Int.random(in: 0 ... indexCount)
+        }
+        
+        randomC = Double.random(in: 1 ... 20)
+        var fromUnit = meterUnits[randomA]
+        var toUnit = meterUnits[randomB]
+        
+        let length1 = Measurement(value: randomC, unit: fromUnit)
+        let length2 = length1.converted(to: toUnit)
+        
+        let formatter = MeasurementFormatter()
+        formatter.unitStyle = .short
+        let unitAnswer = formatter.string(from: toUnit)
+        let userAnswer = "1"
+        let answer = "\(userAnswer) \(unitAnswer)"
+        
+        let formatter1 = MeasurementFormatter()
+        formatter1.unitOptions = .providedUnit
+        let correctAnswer = formatter1.string(from: length2)
+        
+        questionLabel.text = length1
         answerCorrect = round((numA - numB)*100)/100
     }
     
