@@ -25,13 +25,13 @@ class ViewController: UIViewController {
 
     var randomA = 0
     var randomB = 0
-    var randomC: Double = 0.00
+    var randomC: Int = 0
     let meterUnits = [UnitLength.millimeters,UnitLength.centimeters,UnitLength.decimeters,UnitLength.meters,UnitLength.decameters,UnitLength.hectometers,UnitLength.kilometers]
     var indexCount = 0
     
     var questionTxt : String = ""
-    var answerCorrect : Double = 0
-    var answerUser : Double = 0
+    var answerCorrect : String = ""
+    var answerUser : String = ""
     var isShow: Bool = false
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
@@ -61,25 +61,24 @@ class ViewController: UIViewController {
             randomB = Int.random(in: 0 ... indexCount)
         }
         
-        randomC = Double.random(in: 1 ... 20)
-        var fromUnit = meterUnits[randomA]
-        var toUnit = meterUnits[randomB]
+        randomC = Int.random(in: 1 ... 20)
+        let fromUnit = meterUnits[randomA]
+        let toUnit = meterUnits[randomB]
         
-        let length1 = Measurement(value: randomC, unit: fromUnit)
+        let length1 = Measurement(value: Double(randomC), unit: fromUnit)
         let length2 = length1.converted(to: toUnit)
+        
+        let m = MeasurementFormatter()
         
         let formatter = MeasurementFormatter()
         formatter.unitStyle = .short
         let unitAnswer = formatter.string(from: toUnit)
-        let userAnswer = "1"
-        let answer = "\(userAnswer) \(unitAnswer)"
+        let unitQuestion = formatter.string(from: fromUnit)
+
+        print(unitAnswer)
         
-        let formatter1 = MeasurementFormatter()
-        formatter1.unitOptions = .providedUnit
-        let correctAnswer = formatter1.string(from: length2)
-        
-        questionLabel.text = length1
-        answerCorrect = round((numA - numB)*100)/100
+        questionLabel.text = "\(randomC) \(unitQuestion)"
+        answerCorrect = m.string(from: length2)
     }
     
     @IBAction func showBtn(_ sender: Any) {
@@ -88,7 +87,8 @@ class ViewController: UIViewController {
     }
     
     func checkAnswer(){
-        answerUser = (answerTxt.text! as NSString).doubleValue
+        //answerUser = (answerTxt.text! as NSString).doubleValue
+        answerUser = answerTxt.text!
         
         if answerUser == answerCorrect && isShow == false {
             correctAnswers += 1
