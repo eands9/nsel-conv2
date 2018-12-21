@@ -10,6 +10,7 @@ import UIKit
 import Speech
 
 class ViewController: UIViewController {
+    
     @IBOutlet weak var questionLbl: UILabel!
     @IBOutlet weak var answerTxt: UITextField!
     @IBOutlet weak var progressLbl: UILabel!
@@ -23,10 +24,6 @@ class ViewController: UIViewController {
     var timer = Timer()
     var counter = 0.0
 
-    var randomA = 0
-    var randomB = 0
-    let convUnits = [UnitLength.inches,UnitLength.feet,UnitLength.yards]
-    var indexCount = 0
     var questionValue = 0
     
     var questionTxt : String = ""
@@ -35,6 +32,13 @@ class ViewController: UIViewController {
     var isShow: Bool = false
     var unitAnswer = ""
     var unitQuestion = ""
+    
+    var caterogyLists = 0
+    var randomA = 0
+    var randomB = 0
+    
+    var fromUnit = UnitLength.meters
+    var toUnit = UnitLength.meters
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
     let retryArray = ["Try again","Oooops"]
@@ -55,69 +59,81 @@ class ViewController: UIViewController {
     }
     
     func askQuestion(){
-        
-        indexCount = convUnits.count - 1
-        
-        randomA = Int.random(in: 0 ... indexCount)
-        randomB = Int.random(in: 0 ... indexCount)
-        
-        while randomA == randomB{
+        caterogyLists = Int.random(in: 0...1)
+       
+        switch caterogyLists{
+        case 0:
+            var lengthUnitLists = [UnitLength.inches,UnitLength.feet,UnitLength.yards]
+            let indexCount = lengthUnitLists.count - 1
             randomA = Int.random(in: 0 ... indexCount)
             randomB = Int.random(in: 0 ... indexCount)
-        }
-        
-        if randomA == 0 {
-            if randomB == 1{
-                questionValue = Int.random(in: 1 ... 20)*12
+            
+            while randomA == randomB{
+                randomA = Int.random(in: 0 ... indexCount)
+                randomB = Int.random(in: 0 ... indexCount)
             }
-            else{
-                questionValue = Int.random(in: 1 ... 10)*36
+            
+            let fromUnit = lengthUnitLists[randomA]
+            let toUnit = lengthUnitLists[randomB]
+            
+            switch randomA{
+            case 0:
+                questionValue = Int.random(in: 1...20)*12               
+            default:
+                questionValue = Int.random(in: 1 ... 24)*3
             }
+            let formatter = MeasurementFormatter()
+            let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
+            let length2 = length1.converted(to: toUnit)
+            let formatter2 = MeasurementFormatter()
+            formatter2.unitOptions = .providedUnit
+            formatter2.numberFormatter.maximumFractionDigits = 0
+            answerCorrect = formatter2.string(from: length2)
+            formatter.unitStyle = .short
+            unitAnswer = formatter.string(from: toUnit)
+            unitQuestion = formatter.string(from: fromUnit)
+        case 1:
+            var volumeUnitLists = [UnitVolume.cups,UnitVolume.pints,UnitVolume.quarts,UnitVolume.gallons]
+            let indexCount = volumeUnitLists.count - 1
+            
+            randomA = Int.random(in: 0 ... indexCount)
+            randomB = Int.random(in: 0 ... indexCount)
+            
+            while randomA == randomB{
+                randomA = Int.random(in: 0 ... indexCount)
+                randomB = Int.random(in: 0 ... indexCount)
+            }
+            
+            let fromUnit = volumeUnitLists[randomA]
+            let toUnit = volumeUnitLists[randomB]
+            
+            switch randomA{
+            case 0:
+                questionValue = Int.random(in: 10...20)*2
+            case 3:
+                questionValue = Int.random(in: 1...5)*2
+            default:
+                questionValue = Int.random(in: 1...8)*2
+            }
+            let formatter = MeasurementFormatter()
+            let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
+            let length2 = length1.converted(to: toUnit)
+            let formatter2 = MeasurementFormatter()
+            formatter2.unitOptions = .providedUnit
+            formatter2.numberFormatter.maximumFractionDigits = 0
+            answerCorrect = formatter2.string(from: length2)
+            formatter.unitStyle = .short
+            unitAnswer = formatter.string(from: toUnit)
+            unitQuestion = formatter.string(from: fromUnit)
+            
+        default:
+            questionValue = 9999
         }
-        else if randomA == 1 && randomB == 2{
-            questionValue = Int.random(in: 1 ... 24)*3
-        }
-        else{
-            questionValue = Int.random(in: 1 ... 10)
-        }
-        
-        /*
-        if randomA > randomB{
-            randomC = Int.random(in: 1 ... 10)
-        }
-        else{
-            randomC = ((Int.random(in: 10 ... 100))*100)/100
-        }
-        */
-        
-        let fromUnit = convUnits[randomA]
-        let toUnit = convUnits[randomB]
-        
-        let formatter = MeasurementFormatter()
-        let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
-        //formatter.unitOptions = .providedUnit
-        //let q = formatter.string(from: length1)
-        //questionLabel.text = q
-        
-        let length2 = length1.converted(to: toUnit)
-        let formatter2 = MeasurementFormatter()
-        formatter2.unitOptions = .providedUnit
-        formatter2.numberFormatter.maximumFractionDigits = 6
-        answerCorrect = formatter2.string(from: length2)
-
-        formatter.unitStyle = .short
-        unitAnswer = formatter.string(from: toUnit)
-        unitQuestion = formatter.string(from: fromUnit)
-        
         questionLabel.text = "\(questionValue) \(unitQuestion)"
-        /*
-        if unitAnswer == "liter" {
-            unitAnswer = "L"
+        if unitAnswer == "cup"{
+            unitAnswer = "c"
         }
-        */
-        
         answerTxt.text = unitAnswer
-        
     }
     
     @IBAction func showBtn(_ sender: Any) {
