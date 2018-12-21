@@ -26,14 +26,20 @@ class ViewController: UIViewController {
     var randomA = 0
     var randomB = 0
     var randomC: Int = 0
-    let literUnits = [UnitVolume.milliliters,UnitVolume.centiliters,UnitVolume.deciliters,UnitVolume.liters,UnitVolume.kiloliters]
+    let convUnits = [UnitLength.inches,UnitLength.feet,UnitLength.yards]
     var indexCount = 0
+    let inchValues = [12,24,36,48,60,72,84,96,108,120,132,144]
+    var randomInchValue = 0
+    var inchCount = 0
+    
+    var questionValue = 0
     
     var questionTxt : String = ""
     var answerCorrect : String = ""
     var answerUser : String = ""
     var isShow: Bool = false
     var unitAnswer = ""
+    var unitQuestion = ""
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
     let retryArray = ["Try again","Oooops"]
@@ -55,32 +61,48 @@ class ViewController: UIViewController {
     
     func askQuestion(){
         
-        indexCount = literUnits.count - 1
+        indexCount = convUnits.count - 1
+        inchCount = inchValues.count - 1
         
         randomA = Int.random(in: 0 ... indexCount)
         randomB = Int.random(in: 0 ... indexCount)
+        
+        randomInchValue = Int.random(in: 0 ... inchCount)
         
         while randomA == randomB{
             randomA = Int.random(in: 0 ... indexCount)
             randomB = Int.random(in: 0 ... indexCount)
         }
         
+        if randomA == 0{
+            questionValue = inchValues[randomInchValue]
+        }
+        else if randomA == 1{
+            questionValue = Int.random(in: 1 ... 12)
+        }
+        else{
+            questionValue = Int.random(in: 1 ... 10)
+        }
+        
+        /*
         if randomA > randomB{
             randomC = Int.random(in: 1 ... 10)
         }
         else{
-            randomC = ((Int.random(in: 1000 ... 10000))*1000)/1000
+            randomC = ((Int.random(in: 10 ... 100))*100)/100
         }
+        */
         
-        let fromUnit = literUnits[randomA]
-        let toUnit = literUnits[randomB]
+        let fromUnit = convUnits[randomA]
+        let toUnit = convUnits[randomB]
         
         let formatter = MeasurementFormatter()
-        let length1 = Measurement(value: Double(randomC), unit: fromUnit)
-        formatter.unitOptions = .providedUnit
-        let q = formatter.string(from: length1)
+        let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
+        //formatter.unitOptions = .providedUnit
+        //let q = formatter.string(from: length1)
+        //questionLabel.text = q
         
-        questionLabel.text = q
+        print(length1)
         
         let length2 = length1.converted(to: toUnit)
         let formatter2 = MeasurementFormatter()
@@ -90,9 +112,15 @@ class ViewController: UIViewController {
 
         formatter.unitStyle = .short
         unitAnswer = formatter.string(from: toUnit)
+        unitQuestion = formatter.string(from: fromUnit)
+        
+        questionLabel.text = "\(questionValue) \(unitQuestion)"
+        /*
         if unitAnswer == "liter" {
             unitAnswer = "L"
         }
+        */
+        
         answerTxt.text = unitAnswer
         
     }
