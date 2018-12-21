@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     var randomA = 0
     var randomB = 0
     var randomC: Int = 0
-    let meterUnits = [UnitLength.millimeters,UnitLength.centimeters,UnitLength.decimeters,UnitLength.meters,UnitLength.decameters,UnitLength.hectometers,UnitLength.kilometers]
+    let literUnits = [UnitVolume.milliliters,UnitVolume.centiliters,UnitVolume.deciliters,UnitVolume.liters,UnitVolume.kiloliters]
     var indexCount = 0
     
     var questionTxt : String = ""
@@ -55,7 +55,7 @@ class ViewController: UIViewController {
     
     func askQuestion(){
         
-        indexCount = meterUnits.count - 1
+        indexCount = literUnits.count - 1
         
         randomA = Int.random(in: 0 ... indexCount)
         randomB = Int.random(in: 0 ... indexCount)
@@ -72,8 +72,8 @@ class ViewController: UIViewController {
             randomC = ((Int.random(in: 1000 ... 10000))*1000)/1000
         }
         
-        let fromUnit = meterUnits[randomA]
-        let toUnit = meterUnits[randomB]
+        let fromUnit = literUnits[randomA]
+        let toUnit = literUnits[randomB]
         
         let formatter = MeasurementFormatter()
         let length1 = Measurement(value: Double(randomC), unit: fromUnit)
@@ -90,12 +90,11 @@ class ViewController: UIViewController {
 
         formatter.unitStyle = .short
         unitAnswer = formatter.string(from: toUnit)
-        //let unitQuestion = formatter.string(from: fromUnit)
-        
-        if unitAnswer == "meter" {
-            unitAnswer = "m"
+        if unitAnswer == "liter" {
+            unitAnswer = "L"
         }
         answerTxt.text = unitAnswer
+        
     }
     
     @IBAction func showBtn(_ sender: Any) {
