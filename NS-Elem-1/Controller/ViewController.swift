@@ -33,6 +33,7 @@ class ViewController: UIViewController {
     var answerCorrect : String = ""
     var answerUser : String = ""
     var isShow: Bool = false
+    var unitAnswer = ""
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
     let retryArray = ["Try again","Oooops"]
@@ -56,38 +57,53 @@ class ViewController: UIViewController {
         
         indexCount = meterUnits.count - 1
         
+        randomA = Int.random(in: 0 ... indexCount)
+        randomB = Int.random(in: 0 ... indexCount)
+        
         while randomA == randomB{
             randomA = Int.random(in: 0 ... indexCount)
             randomB = Int.random(in: 0 ... indexCount)
         }
         
-        randomC = Int.random(in: 1 ... 20)
+        if randomA > randomB{
+            randomC = Int.random(in: 1 ... 10)
+        }
+        else{
+            randomC = ((Int.random(in: 1000 ... 10000))*1000)/1000
+        }
+        
         let fromUnit = meterUnits[randomA]
         let toUnit = meterUnits[randomB]
         
-        let length1 = Measurement(value: Double(randomC), unit: fromUnit)
-        let length2 = length1.converted(to: toUnit)
-        
-        let m = MeasurementFormatter()
-        
         let formatter = MeasurementFormatter()
-        formatter.unitStyle = .short
-        let unitAnswer = formatter.string(from: toUnit)
-        let unitQuestion = formatter.string(from: fromUnit)
-
-        print(unitAnswer)
+        let length1 = Measurement(value: Double(randomC), unit: fromUnit)
+        formatter.unitOptions = .providedUnit
+        let q = formatter.string(from: length1)
         
-        questionLabel.text = "\(randomC) \(unitQuestion)"
-        answerCorrect = m.string(from: length2)
+        questionLabel.text = q
+        
+        let length2 = length1.converted(to: toUnit)
+        let formatter2 = MeasurementFormatter()
+        formatter2.unitOptions = .providedUnit
+        formatter2.numberFormatter.maximumFractionDigits = 6
+        answerCorrect = formatter2.string(from: length2)
+
+        formatter.unitStyle = .short
+        unitAnswer = formatter.string(from: toUnit)
+        //let unitQuestion = formatter.string(from: fromUnit)
+        
+        if unitAnswer == "meter" {
+            unitAnswer = "m"
+        }
+        answerTxt.text = unitAnswer
     }
     
     @IBAction func showBtn(_ sender: Any) {
-        answerTxt.text = String(answerCorrect)
+        answerTxt.text = answerCorrect
         isShow = true
     }
     
     func checkAnswer(){
-        //answerUser = (answerTxt.text! as NSString).doubleValue
         answerUser = answerTxt.text!
         
         if answerUser == answerCorrect && isShow == false {
@@ -95,14 +111,14 @@ class ViewController: UIViewController {
             numberAttempts += 1
             updateProgress()
             randomPositiveFeedback()
-            askQuestion()
             answerTxt.text = ""
+            askQuestion()
         }
         else if isShow == true {
             readMe(myText: "Next Question")
+            answerTxt.text = ""
             askQuestion()
             isShow = false
-            answerTxt.text = ""
             numberAttempts += 1
             updateProgress()
         }
@@ -111,6 +127,7 @@ class ViewController: UIViewController {
             answerTxt.text = ""
             numberAttempts += 1
             updateProgress()
+            answerTxt.text = unitAnswer
         }
     }
     
