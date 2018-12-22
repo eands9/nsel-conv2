@@ -53,14 +53,11 @@ class ViewController: UIViewController {
         
         self.answerTxt.becomeFirstResponder()
     }
-
     @IBAction func checkAnswerByUser(_ sender: Any) {
         checkAnswer()
     }
-    
     func askQuestion(){
-        caterogyLists = Int.random(in: 0...1)
-       
+        caterogyLists = Int.random(in: 0...2)
         switch caterogyLists{
         case 0:
             var lengthUnitLists = [UnitLength.inches,UnitLength.feet,UnitLength.yards]
@@ -78,7 +75,7 @@ class ViewController: UIViewController {
             
             switch randomA{
             case 0:
-                questionValue = Int.random(in: 1...20)*12               
+                questionValue = Int.random(in: 1...20)*12
             default:
                 questionValue = Int.random(in: 1 ... 24)*3
             }
@@ -109,11 +106,13 @@ class ViewController: UIViewController {
             
             switch randomA{
             case 0:
-                questionValue = Int.random(in: 10...20)*2
+                questionValue = Int.random(in: 1...10)*16
+            case 1:
+                questionValue = Int.random(in: 5...15)*8
             case 3:
-                questionValue = Int.random(in: 1...5)*2
+                questionValue = Int.random(in: 10...20)*4
             default:
-                questionValue = Int.random(in: 1...8)*2
+                questionValue = Int.random(in: 2...8)*2
             }
             let formatter = MeasurementFormatter()
             let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
@@ -125,7 +124,36 @@ class ViewController: UIViewController {
             formatter.unitStyle = .short
             unitAnswer = formatter.string(from: toUnit)
             unitQuestion = formatter.string(from: fromUnit)
+        case 2:
+            var lengthUnitLists = [UnitMass.ounces,UnitMass.pounds]
+            let indexCount = lengthUnitLists.count - 1
+            randomA = Int.random(in: 0 ... indexCount)
+            randomB = Int.random(in: 0 ... indexCount)
             
+            while randomA == randomB{
+                randomA = Int.random(in: 0 ... indexCount)
+                randomB = Int.random(in: 0 ... indexCount)
+            }
+            
+            let fromUnit = lengthUnitLists[randomA]
+            let toUnit = lengthUnitLists[randomB]
+            
+            switch randomA{
+            case 0:
+                questionValue = Int.random(in: 2...20)*16
+            default:
+                questionValue = Int.random(in: 3 ... 20)
+            }
+            let formatter = MeasurementFormatter()
+            let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
+            let length2 = length1.converted(to: toUnit)
+            let formatter2 = MeasurementFormatter()
+            formatter2.unitOptions = .providedUnit
+            formatter2.numberFormatter.maximumFractionDigits = 0
+            answerCorrect = formatter2.string(from: length2)
+            formatter.unitStyle = .short
+            unitAnswer = formatter.string(from: toUnit)
+            unitQuestion = formatter.string(from: fromUnit)
         default:
             questionValue = 9999
         }
@@ -135,12 +163,10 @@ class ViewController: UIViewController {
         }
         answerTxt.text = unitAnswer
     }
-    
     @IBAction func showBtn(_ sender: Any) {
         answerTxt.text = answerCorrect
         isShow = true
     }
-    
     func checkAnswer(){
         answerUser = answerTxt.text!
         
@@ -168,12 +194,10 @@ class ViewController: UIViewController {
             answerTxt.text = unitAnswer
         }
     }
-    
     @objc func updateTimer(){
         counter += 0.1
         timerLbl.text = String(format:"%.1f",counter)
     }
-    
     func readMe( myText: String) {
         let utterance = AVSpeechUtterance(string: myText )
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
@@ -182,16 +206,13 @@ class ViewController: UIViewController {
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.speak(utterance)
     }
-    
     func randomPositiveFeedback(){
         randomPick = Int(arc4random_uniform(9))
         readMe(myText: congratulateArray[randomPick])
     }
-    
     func updateProgress(){
         progressLbl.text = "\(correctAnswers) / \(numberAttempts)"
     }
-    
     func randomTryAgain(){
         randomPick = Int(arc4random_uniform(2))
         readMe(myText: retryArray[randomPick])
