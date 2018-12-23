@@ -75,9 +75,9 @@ class ViewController: UIViewController {
             
             switch randomA{
             case 0:
-                questionValue = Int.random(in: 1...20)*12
+                questionValue = Int.random(in: 2...20)*12
             default:
-                questionValue = Int.random(in: 1 ... 24)*3
+                questionValue = Int.random(in: 2 ... 11)*3
             }
             let formatter = MeasurementFormatter()
             let length1 = Measurement(value: Double(questionValue), unit: fromUnit)
@@ -108,9 +108,9 @@ class ViewController: UIViewController {
             case 0:
                 questionValue = Int.random(in: 1...10)*16
             case 1:
-                questionValue = Int.random(in: 5...15)*8
+                questionValue = Int.random(in: 5...8)*8
             case 3:
-                questionValue = Int.random(in: 10...20)*4
+                questionValue = Int.random(in: 6...9)*4
             default:
                 questionValue = Int.random(in: 2...8)*2
             }
